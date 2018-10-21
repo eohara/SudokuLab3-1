@@ -2,6 +2,9 @@ package pkgGame;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 
@@ -36,6 +39,8 @@ public class Sudoku extends LatinSquare {
 	 */
 
 	private int iSqrtSize;
+	
+	private HashMap<Integer, Cell> cells = new HashMap<Integer, Cell>();
 
 	/**
 	 * Sudoku - for Lab #2... do the following:
@@ -64,6 +69,9 @@ public class Sudoku extends LatinSquare {
 		int[][] puzzle = new int[iSize][iSize];
 		super.setLatinSquare(puzzle);
 		FillDiagonalRegions();
+		SetCells();
+		fillRemaining(this.cells.get(Objects.hash(0, iSqrtSize)));
+		
 	}
 
 	/**
@@ -87,7 +95,9 @@ public class Sudoku extends LatinSquare {
 		} else {
 			throw new Exception("Invalid size");
 		}
-
+		SetCells();
+		fillRemaining(this.cells.get(Objects.hash(0, iSqrtSize)));
+		
 	}
 
 	/**
@@ -97,6 +107,30 @@ public class Sudoku extends LatinSquare {
 	 * @since Lab #2
 	 * @return - returns the LatinSquare instance
 	 */
+	
+	private void SetCells() {
+		for (int iRow = 0; iRow < iSize; iRow++) {
+			for (int iCol = 0; iCol < iSize; iCol++) {
+				Cell c = new Cell (iRow, iCol);
+				c.setlstValidValues(iCol, iRow) = getAllValidCellValues(iCol,iRow);
+				c.ShuffleValidValues();
+				cells.put(c.hashCode(), c);
+			}
+		}
+	}
+	
+	private void ShowAvailableValues() {
+		for(int iRow = 0; iRow < iSize; iRow++) {
+			for(int iCol = 0; iCol < iSize; iCol++) {
+				Cell c = cells.get(Objects.hash(iRow, iCol));
+				for (Integer i: c.getlstValidValues()) {
+					System.out.print(i + " ");
+				}
+				System.out.println("");
+			}
+	}
+	}
+
 	public int[][] getPuzzle() {
 		return super.getLatinSquare();
 	}
@@ -154,6 +188,27 @@ public class Sudoku extends LatinSquare {
 		int i = (iCol / iSqrtSize) + ((iRow / iSqrtSize) * iSqrtSize);
 
 		return getRegion(i);
+	}
+	
+	private HashSet<Integer> getAllValidCellValues(int iRow, int iCol){
+		HashSet<Integer> hsCellRange = new HashSet<Integer>();
+		
+		if (this.getPuzzle()[iRow][iCol] != 0) {
+			hsCellRange.add(this.getPuzzle()[iRow][iCol]);
+		}
+		
+		else {
+			
+			for (int i = 1; i<= iSize; i++) {
+	
+			if (isValidValue(iRow, iCol, i))
+			{
+				hsCellRange.add(i);
+			}
+		}
+		}
+		
+		return hsCellRange;
 	}
 
 	/**
@@ -269,7 +324,7 @@ public class Sudoku extends LatinSquare {
 	 *            given value
 	 * @return - returns 'true' if the proposed value is valid for the row and column
 	 */
-	public boolean isValidValue(int iRow,int iCol,  int iValue) {
+	public boolean isValidValue(int iRow, int iCol,  int iValue) {
 		
 		if (doesElementExist(super.getRow(iRow),iValue))
 		{
@@ -319,11 +374,30 @@ public class Sudoku extends LatinSquare {
 	private void FillDiagonalRegions() {
 
 		for (int i = 0; i < iSize; i = i + iSqrtSize) {
-			System.out.println("Filling region: " + getRegionNbr(i, i));
+		//	System.out.println("Filling region: " + getRegionNbr(i, i));
 			SetRegion(getRegionNbr(i, i));
 			ShuffleRegion(getRegionNbr(i, i));
 		}
 	}
+	
+	private boolean fillRemaining(Cell c) {
+		if(c == null)
+			return true;
+		
+		for (int num : c.getlstValidValues()) {
+			if (isValidValue(c, num)) {
+				this.getPuzzle()[c.getiRow()][c.getiCol()] = num;
+				
+				if (fillRemaining(c.GetNextCell(c)))
+					return true;
+				this.getPuzzle()[c.getiRow()][c.getiCol()] = 0;
+				}
+						
+			}
+			return false;
+		}
+		
+	
 
 	/**
 	 * SetRegion - purpose of this method is to set the values of a given region
@@ -414,7 +488,9 @@ public class Sudoku extends LatinSquare {
 	}
 	
 	
-	private class Cell{
+	
+	private class Cell {
+		
 		private int iRow;
 		private int iCol;
 		private ArrayList<Integer> lstValidValues = new ArrayList<Integer>();
@@ -424,16 +500,11 @@ public class Sudoku extends LatinSquare {
 			this.iRow = iRow;
 			this.iCol = iCol;
 		}
-
 		public int getiRow() {
 			return iRow;
 		}
-
-		
-
 		public int getiCol() {
 			return iCol;
-		}
 		}
 		@Override
 		public int hashCode() {
@@ -441,43 +512,45 @@ public class Sudoku extends LatinSquare {
 		}
 		@Override
 		public boolean equals(Object o) {
-			if (o == this)
+			if (o == this) 
 				return true;
 			
-			if !(o instanceof Cell)){
+			if (!(o instanceof Cell))
 				return false;
-			}
+		
 			Cell c = (Cell) o;
 			return iCol == c.iCol && iRow == c.iRow;
 		}
+		
+		public ArrayList<Integer> getlstValidValues(){
+			return lstValidValues;
+		}
+		
+		public void setlstValidValues(HashSet<Integer> hsValidValues) {
+			lstValidValues = new ArrayList<Integer> (hsValidValues);
+		}
+		public void ShuffleValidValues() {
+			Collections.shuffle(lstValidValues);
+		}
+		public Cell GetNextCell(Cell c) {
+			int iCol = c.getiCol() + 1;
+			int iRow = c.getiRow();
+			int iSqrtSize= (int) Math.sqrt(iSize);
 			
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+			if (iCol >= iSize && iRow < iSize -1) {
+				iRow = iRow + 1;
+				iCol = 0;
+			}
+			
+			if (iRow >= iSize && iCol >= iSize) {
+				return null;
+			}
+			return (Cell)cells.get(Objects.hash(iRow, iCol));
+	
+	
+	
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+}
 }
