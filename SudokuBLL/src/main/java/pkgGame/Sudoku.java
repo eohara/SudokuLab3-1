@@ -119,17 +119,7 @@ public class Sudoku extends LatinSquare {
 		}
 	}
 	
-	private void ShowAvailableValues() {
-		for(int iRow = 0; iRow < iSize; iRow++) {
-			for(int iCol = 0; iCol < iSize; iCol++) {
-				Cell c = cells.get(Objects.hash(iRow, iCol));
-				for (Integer i: c.getlstValidValues()) {
-					System.out.print(i + " ");
-				}
-				System.out.println("");
-			}
-	}
-	}
+	
 
 	public int[][] getPuzzle() {
 		return super.getLatinSquare();
