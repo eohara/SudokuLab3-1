@@ -9,7 +9,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 public class SudokuTest {
-
+/*
 	private void PrintStars() {
 		for (int i = 0; i < 50; i++)
 			System.out.print("*");
@@ -122,7 +122,24 @@ public class SudokuTest {
 		}
 
 	}
+*/
+	@Test
+	public void Sudoku_FullPuzzle_test1() {
+		
+		try {
+			Sudoku s1 = new Sudoku(4);
+			s1.PrintPuzzle();
+			assertTrue(s1.isSudoku());
+			
+			
+			
+		} catch (Exception e) {
+			fail("Test failed to build a Sudoku");
+		}
 
+	}
+
+	
 
 
 

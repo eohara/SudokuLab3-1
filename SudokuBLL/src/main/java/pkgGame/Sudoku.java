@@ -67,10 +67,10 @@ public class Sudoku extends LatinSquare {
 		}
 
 		int[][] puzzle = new int[iSize][iSize];
+		
 		super.setLatinSquare(puzzle);
-		FillDiagonalRegions();
 		SetCells();
-		fillRemaining(this.cells.get(Objects.hash(0, iSqrtSize)));
+		fillRemaining(this.cells.get(Objects.hash(0, 0)));
 		
 	}
 
@@ -112,7 +112,7 @@ public class Sudoku extends LatinSquare {
 		for (int iRow = 0; iRow < iSize; iRow++) {
 			for (int iCol = 0; iCol < iSize; iCol++) {
 				Cell c = new Cell (iRow, iCol);
-				c.setlstValidValues(iCol, iRow) = getAllValidCellValues(iCol,iRow);
+				c.setlstValidValues(getAllValidCellValues(iCol,iRow));
 				c.ShuffleValidValues();
 				cells.put(c.hashCode(), c);
 			}
@@ -342,6 +342,9 @@ public class Sudoku extends LatinSquare {
 		return true;
 	}
 
+	public boolean isValidValue(Cell c, int iValue) {
+		return this.isValidValue(c.getiRow(), c.getiCol(), iValue);
+	}
 	/**
 	 * PrintPuzzle This method will print the puzzle to the console (space between
 	 * columns, line break after row)
@@ -384,9 +387,9 @@ public class Sudoku extends LatinSquare {
 		if(c == null)
 			return true;
 		
-		for (int num : c.getlstValidValues()) {
-			if (isValidValue(c, num)) {
-				this.getPuzzle()[c.getiRow()][c.getiCol()] = num;
+		for (int number : c.getlstValidValues()) {
+			if (isValidValue(c, number)) {
+				this.getPuzzle()[c.getiRow()][c.getiCol()] = number;
 				
 				if (fillRemaining(c.GetNextCell(c)))
 					return true;
@@ -546,9 +549,6 @@ public class Sudoku extends LatinSquare {
 				return null;
 			}
 			return (Cell)cells.get(Objects.hash(iRow, iCol));
-	
-	
-	
 	}
 	
 	
