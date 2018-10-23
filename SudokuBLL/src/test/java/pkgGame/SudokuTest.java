@@ -127,6 +127,36 @@ public class SudokuTest {
 	public void Sudoku_FullPuzzle_test1() {
 		
 		try {
+			Sudoku s1 = new Sudoku(9);
+			s1.PrintPuzzle();
+			assertTrue(s1.isSudoku());
+			
+			
+			
+		} catch (Exception e) {
+			fail("Test failed to build a Sudoku");
+		}
+
+	}
+	@Test
+	public void Sudoku_FullPuzzle_test2() {
+		
+		try {
+			Sudoku s1 = new Sudoku(16);
+			s1.PrintPuzzle();
+			assertTrue(s1.isSudoku());
+			
+			
+			
+		} catch (Exception e) {
+			fail("Test failed to build a Sudoku");
+		}
+
+	}
+	@Test
+	public void Sudoku_FullPuzzle_test3() {
+		
+		try {
 			Sudoku s1 = new Sudoku(4);
 			s1.PrintPuzzle();
 			assertTrue(s1.isSudoku());
