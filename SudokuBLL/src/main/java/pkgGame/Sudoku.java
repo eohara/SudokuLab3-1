@@ -86,7 +86,7 @@ public class Sudoku extends LatinSquare {
 	 *             will be thrown if the length of the puzzle do not have a whole
 	 *             number square root
 	 */
-	public Sudoku(int[][] puzzle) throws Exception {
+	/*public Sudoku(int[][] puzzle) throws Exception {
 		super(puzzle);
 		this.iSize = puzzle.length;
 		double SQRT = Math.sqrt(iSize);
@@ -99,6 +99,7 @@ public class Sudoku extends LatinSquare {
 		fillRemaining(this.cells.get(Objects.hash(0, iSqrtSize)));
 		
 	}
+	*/
 
 	/**
 	 * getPuzzle - return the Sudoku puzzle
